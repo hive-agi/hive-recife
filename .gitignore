@@ -1,0 +1,36 @@
+# Clojure / tools.deps build artifacts
+/target
+/classes
+/.cpcache
+pom.xml.asc
+*.jar
+
+# REPL / editor / tooling caches
+.nrepl-port
+.rebel_readline_history
+.lsp/.cache
+.lsp/sqlite.*
+.clj-kondo/.cache
+.cljs_node_repl
+
+# Local dependency overrides — NEVER publish (holds machine-local :local/root paths)
+local.deps.edn
+
+# recife / TLA+ / TLC generated artifacts (specs are Clojure; these are outputs)
+/states
+*.st
+recife*.tla
+recife*.cfg
+MC*.tla
+MC*.cfg
+*_TTrace_*.tla
+*.tlaplus.stats
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# OS / misc
+.DS_Store
+*.log
+*.swp
