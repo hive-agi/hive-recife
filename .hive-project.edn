@@ -1,3 +1,4 @@
 {:project-id  "hive-recife"
+ :parent      "hive"
  :description "A Clojure wrapper around recife (Clojure -> TLA+/TLC model checker): a normalized ModelCheckResult (:ok/:fail/:skip) + counterexample traces for safety/liveness verification of stateful protocols."
  :type        :library :carto {:source-roots ["src" "test"]}}
