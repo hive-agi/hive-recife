@@ -1,5 +1,14 @@
 # hive-recife
 
+<!-- hive-badges -->
+
+[![Clojars Project](https://img.shields.io/clojars/v/io.github.hive-agi/hive-recife.svg)](https://clojars.org/io.github.hive-agi/hive-recife)
+[![cljdoc](https://cljdoc.org/badge/io.github.hive-agi/hive-recife)](https://cljdoc.org/d/io.github.hive-agi/hive-recife/CURRENT)
+[![release](https://github.com/hive-agi/hive-recife/actions/workflows/release.yml/badge.svg)](https://github.com/hive-agi/hive-recife/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+<!-- /hive-badges -->
+
 A small Clojure adapter over [recife](https://github.com/pfeodrippe/recife) (Clojure → TLA⁺/TLC model checker) that normalizes a model-check run into a single, uniform result value with classified counterexample traces.
 
 recife lets you write a TLA⁺ specification in Clojure and check it with TLC. `hive-recife` sits one layer above: it runs a spec and maps recife's raw output into a closed `ModelCheckResult`
