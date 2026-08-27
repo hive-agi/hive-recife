@@ -38,8 +38,13 @@
     (is (= :safety (core/classify-violation {})))
     ;; recife tags an invariant refutation {:violation {:type :invariant ...}}
     (is (= :safety (core/classify-violation {:violation {:type :invariant}})))
-    (is (= :safety (core/classify-violation {:violation {:type :deadlock}})))
-    (is (= :safety (core/classify-violation nil)))))
+    (is (= :safety (core/classify-violation nil))))
+  (testing "a deadlock is its own class, NOT a safety violation — TLC raises it
+            for a state with no enabled action, so a spec whose goal is to
+            terminate reaches its goal and would otherwise be reported as
+            violating an invariant the caller never wrote"
+    (is (= :deadlock (core/classify-violation {:violation {:type :deadlock}})))
+    (is (not= :safety (core/classify-violation {:violation {:type :deadlock}})))))
 
 (deftest classify-violation-rule-order
   (testing "first match wins — the terminal :safety rule also matches, but the

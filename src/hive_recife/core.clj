@@ -52,10 +52,13 @@
 
 (def default-rules
   "Ordered violation rules; first match wins. A temporal (liveness) refutation
-   surfaces as a :back-to-state or :stuttering violation; a bare finite
-   counterexample with no such marker is a safety (invariant) violation."
+   surfaces as a :back-to-state or :stuttering violation; a deadlock is reported
+   as itself rather than folded into :safety, because no property the caller
+   wrote was refuted by it; a bare finite counterexample with no such marker is
+   a safety (invariant) violation."
   [(rule #(= :back-to-state (get-in % [:violation :type])) :liveness)
    (rule #(= :stuttering    (get-in % [:violation :type])) :liveness)
+   (rule #(= :deadlock      (get-in % [:violation :type])) :deadlock)
    (rule #(= :invariant     (get-in % [:violation :type])) :safety)
    (rule (constantly true) :safety)])
 

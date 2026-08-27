@@ -26,8 +26,14 @@
   [:enum :ok :fail :skip])
 
 (def violation-types
-  "The two TLC property classes a counterexample can refute."
-  [:enum :safety :liveness])
+  "What a counterexample refutes.
+
+   :safety and :liveness are the two TLC property classes. :deadlock is a third
+   member on purpose: TLC raises it for a state with no enabled action, which at
+   the TLA+ level IS a safety property — but folding it into :safety tells a
+   caller that a property THEY wrote was refuted, and none was. A spec whose
+   goal is to terminate reaches its goal and is reported as violating it."
+  [:enum :safety :liveness :deadlock])
 
 ;; A generatable surrogate for opaque global-state values. A recife global-state
 ;; value is any EDN; a bare :any in a generatable slot is the genbomb — the
