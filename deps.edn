@@ -3,7 +3,7 @@
  {org.clojure/clojure {:mvn/version "1.12.6"}
 
   ;; malli — the schema engine backing the value objects + m/=> contracts.
-  metosin/malli {:mvn/version "0.20.1"}
+  metosin/malli {:mvn/version "0.20.2"}
 
   ;; hive-spi.schema.registry — the schema registry the ModelCheckResult / ModelSpec
   ;; value objects register into.
