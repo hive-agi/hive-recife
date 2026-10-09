@@ -1,9 +1,9 @@
 (ns hive-recife.tlc-opts-test
   "TLC opts passthrough: `tlc-opts` whitelists the TLC budget keys of a
    ModelSpec's :opts, and `default-runner` hands them to recife's run-model as
-   its third argument. The runner is exercised through an injected run-model
-   stub (the `resolve-run-model` seam is private, so the pure projection is the
-   trifecta subject and the threading is checked by its contract)."
+   its third argument. The `resolve-run-model` seam is private, so the pure
+   projection is the trifecta subject; the threading through default-runner
+   is not exercised here and rests on its one-line call site."
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.test.check.generators :as gen]
             [malli.core :as m]
