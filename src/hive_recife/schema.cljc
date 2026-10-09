@@ -3,6 +3,7 @@
    into the hive-spi schema registry.
 
    Registered keys (contributed to the schema registry):
+     :hive.recife/tlc-opts        the TLC run budget a ModelSpec may carry
      :hive.recife/model-spec      a ModelSpec descriptor
      :hive.recife/raw-result      a permissive model of recife `get-result` output
      :hive.recife/counterexample  a normalized violation trace
@@ -48,16 +49,36 @@
 ;; Value objects
 ;; ---------------------------------------------------------------------------
 
+(def TlcOpts
+  "The TLC run budget a caller may thread through to recife.core/run-model.
+   Closed: only these keys reach TLC, so a caller cannot smuggle recife's
+   process-control opts (:async, :run-local, :raw-output, :debug ...) past the
+   adapter. :isolated runs the spec under a fresh class loader, which is what
+   makes many specs per JVM safe (TLC caches modules across runs otherwise).
+   :tlc-args are extra literal TLC command-line arguments, appended last.
+
+   TLC formats numbers through the JVM default locale; on a non-English locale
+   run the JVM with -Duser.language=en -Duser.country=US so its output parses."
+  [:map {:closed true}
+   [:workers     {:optional true} [:or [:int {:min 1 :max 64}] [:enum :auto]]]
+   [:depth       {:optional true} [:int {:min 1 :max 1000000}]]
+   [:seed        {:optional true} :int]
+   [:no-deadlock {:optional true} :boolean]
+   [:isolated    {:optional true} :boolean]
+   [:tlc-args    {:optional true} [:sequential {:gen/max 3} [:string {:min 1}]]]])
+
 (def ModelSpec
   "Descriptor of a recife model: the init global-state, the opaque recife
    components (procs/invariants/properties), and the DECLARED names of the
-   safety invariants + liveness properties the spec carries."
+   safety invariants + liveness properties the spec carries. :opts optionally
+   carries the TLC run budget (see TlcOpts)."
   [:map {:closed true}
    [:name :keyword]
    [:init-state GlobalState]
    [:components [:sequential {:gen/max 3} [:any {:gen/schema :keyword}]]]
    [:safety   [:sequential [:string {:min 1}]]]
-   [:liveness [:sequential [:string {:min 1}]]]])
+   [:liveness [:sequential [:string {:min 1}]]]
+   [:opts {:optional true} TlcOpts]])
 
 (def RawRecifeResult
   "Permissive model of what recife `get-result` returns. The :trace key is the
@@ -98,7 +119,8 @@
 (def registered-keys
   "The schema keys this ns contributes to the hive-spi registry."
   (reg/register-all!
-   {:hive.recife/model-spec     ModelSpec
+   {:hive.recife/tlc-opts       TlcOpts
+    :hive.recife/model-spec     ModelSpec
     :hive.recife/raw-result     RawRecifeResult
     :hive.recife/counterexample CounterexampleTrace
     :hive.recife/result         ModelCheckResult}))
