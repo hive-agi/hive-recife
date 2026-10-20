@@ -128,14 +128,34 @@
   (try (requiring-resolve 'recife.core/run-model)
        (catch Throwable _ nil)))
 
+(def tlc-opt-keys
+  "The TLC budget keys `tlc-opts` passes through to recife (schema/TlcOpts)."
+  [:workers :depth :seed :no-deadlock :isolated :tlc-args])
+
+(defn tlc-opts
+  "Pure: the recife run-model opts map for `model-spec`. Keeps only the
+   whitelisted TLC budget keys of its :opts, drops nil values and an empty
+   :tlc-args, and normalizes :tlc-args to a vector of strings. A spec with no
+   :opts yields {}, which leaves recife's own defaults (workers :auto,
+   run-local, non-isolated) in force."
+  [model-spec]
+  (let [opts (into {}
+                   (remove (comp nil? val))
+                   (select-keys (:opts model-spec) tlc-opt-keys))]
+    (if (seq (:tlc-args opts))
+      (update opts :tlc-args #(mapv str %))
+      (dissoc opts :tlc-args))))
+
 (defn default-runner
   "Effect fn: run `model-spec` through recife, returning the raw result map, or
    `recife-absent` when recife is unresolvable. In run-local mode (recife's
    default) run-model returns the result MAP directly; only the async subprocess
-   path returns a derefable — deref that, else use the map as-is."
-  [{:keys [init-state components]}]
+   path returns a derefable — deref that, else use the map as-is.
+   The spec's :opts (TLC budget, see `tlc-opts`) go to run-model as its third
+   argument; :isolated true is what makes many specs per JVM safe."
+  [{:keys [init-state components] :as model-spec}]
   (if-let [run-model (resolve-run-model)]
-    (let [ret (run-model init-state (set components))]
+    (let [ret (run-model init-state (set components) (tlc-opts model-spec))]
       (if (instance? clojure.lang.IDeref ret) (deref ret) ret))
     recife-absent))
 
@@ -156,6 +176,7 @@
 ;; ===========================================================================
 
 (m/=> recife-trace->status [:=> [:cat :any] schema/statuses])
+(m/=> tlc-opts [:=> [:cat schema/ModelSpec] schema/TlcOpts])
 (m/=> classify-violation
       [:function
        [:=> [:cat [:maybe :map]] [:maybe schema/violation-types]]

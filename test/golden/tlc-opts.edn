@@ -1,0 +1,6 @@
+{:auto-workers {:workers :auto},
+ :empty-args {},
+ :isolated-seed {:seed 7, :no-deadlock true, :isolated true},
+ :no-opts {},
+ :tlc-args {:tlc-args ["-fp" "3"]},
+ :workers-depth {:workers 4, :depth 50}}
