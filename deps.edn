@@ -3,11 +3,11 @@
  {org.clojure/clojure {:mvn/version "1.12.6"}
 
   ;; malli — the schema engine backing the value objects + m/=> contracts.
-  metosin/malli {:mvn/version "0.20.2"}
+  metosin/malli {:mvn/version "0.20.3"}
 
   ;; hive-spi.schema.registry — the schema registry the ModelCheckResult / ModelSpec
   ;; value objects register into.
-  io.github.hive-agi/hive-spi {:mvn/version "1.4.4"}
+  io.github.hive-agi/hive-spi {:mvn/version "1.4.9"}
 
   ;; recife — the provider: Clojure -> TLA+/TLC model checker. The adapter
   ;; resolves it lazily (requiring-resolve) so hive-recife.core loads on any
